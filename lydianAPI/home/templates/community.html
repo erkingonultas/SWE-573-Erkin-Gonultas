@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="community-page">
+    {% if user_is_member %}
+        <div class="row justify-content-between mx-0">
+            <h1>{{ community.name }}</h1>
+            <div class="dropdown">
+                <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                    style="border: none; background-color: transparent;">
+                    <img src="\assets\icons\gear-solid.svg" alt="settings-icon" height="20px" width="auto" class="ml-2">
+                </button>
+                <ul class="dropdown-menu">
+                    {% if user_is_admin %}
+                    <li>
+                        <a class="dropdown-item" href="{% url 'create_template' community.id %}">Create Templates</a>
+                    </li>
+                    {% endif %}
+                    <li>
+                        <a class="dropdown-item" href="{% url 'leave_community' community.id %}">Leave Community</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="post-list">
+        {% for post in posts %}
+            <ul style="list-style: none;">
+                <li class="post"> 
+                    <div class="post-owner">
+                        {{ post.created_by.username }}
+                    </div>
+                    <span class="post-title fs-24 fw-bold">
+                        {{ post.title }}
+                    </span> <br>
+                    <span class="post-body fs-14 fw-400">
+                        {{ post.description|slice:":300" }}
+                    </span>
+                </li>
+            </ul>
+        {% empty %}
+        <li>No posts available. Create one to be the first!</li>
+        {% endfor %}
+        <div class="row justify-content-center">
+            <select id="templateSelect" onchange="updateCreatePostLink()">
+                {% for template in templates %}
+                <option value="{{ template.id }}">{{ template.title }}</option>
+                {% empty %}
+                <option>No available templates</option>
+                {% endfor %}
+            </select>
+            {% if templates %}
+                <a id="createPostLink" class="btn btn-sm" href="{% url 'create_post' community.id 0 %}">Create Post</a>
+            {% endif %}
+        </div>
+        </div>
+    {% else %}
+        <h3>Join the Community to View Content!</h3>
+        <br />
+        <a class="btn" style="text-decoration: underline;" href="{% url 'join_community' community.id %}">Join Now!</a>
+    {% endif %}
+</div>
+<script>
+    function updateCreatePostLink() {
+        var selectedTemplateId = document.getElementById('templateSelect').value;
+        var link = document.getElementById('createPostLink');
+        link.href = "{% url 'create_post' community.id '0' %}".replace('0', selectedTemplateId);
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        updateCreatePostLink(); // Update link on page load
+    });
+</script>
+<style>
+    .community-page {
+        background-color: white;
+        margin-top: 3rem;
+        padding: 1rem;
+        height: max-content;
+        min-height: 100vh;
+    }
+
+    .community-page h1 {
+        font-size: 26px;
+        font-weight: bold;
+        text-align: left;
+    }
+
+    .community-page .dropdown-toggle::after {
+        content: none;
+    }
+
+    .community-page select {
+        width: max-content;
+        border: 1px solid #191919;
+        border-radius: 0px;
+        height: 36px;
+    }
+    .community-page .post-list .post {
+        background-color: #e5e5e5;
+        height: max-content;
+        padding: .5rem 1rem 2rem;
+        margin: 1rem 2rem;
+        text-align: left;
+    }
+    .community-page .post-list .post .post-owner {
+        text-transform: capitalize;
+        font-weight: bold;
+        margin-bottom: 2rem;
+    }
+    .community-page .post-list .post .post-title {
+        font-size: 24px;
+        font-weight: bold;
+    }
+    .community-page .post-list .post .post-body {
+        font-size: 14px;
+        font-weight: 400;
+    }
+    .row .btn {
+        border: 1px solid #191919;
+        border-radius: 0px;
+        background-color: white;
+        border-left: none;
+        color: #191919;
+        font-size: 17px;
+        transition: .15s ease-in;
+    }
+
+    .row .btn:hover {
+        border-color: #191919;
+        color: #e5e5e5;
+        background-color: #191919;
+    }
+</style>
+{% endblock %}

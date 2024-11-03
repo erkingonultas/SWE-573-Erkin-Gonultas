@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {% if user.is_authenticated %}
+        {% block home-content %}
+            {% include 'list_communities.html' %}
+        {% endblock %}
+    {% else %}
+    <div class="card card-body mt-5 text-center">
+        <p class="banner-text">
+            <span>You need an account to view the posts!</span>
+        </p>
+        <h2>Join Today</h2>
+        <h1>Keep in Touch With Relic Enthusiasts!</h1>
+        <a href="{% url 'register_user' %}" class="btn btn-secondary btn-sm mb-5">Register Now</a>
+
+        <p class="m-0">Already a member?</p>
+        <a href="{% url 'login' %}" class="btn  btn-sm"  style="text-decoration: underline;">Login</a>
+    </div>
+        
+    {% endif %}
+    <style>
+    </style>
+{% endblock %}

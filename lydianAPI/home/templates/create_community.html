@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="create-community">
+    <h1>Create Community</h1>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <br/>
+        <input type="submit" value="New Community" class="btn btn-secondary">
+    </form>
+</div>
+
+<style>
+    .create-community p {
+        display: flex;
+        justify-content: center;
+    }
+    .create-community p label {
+        width: max-content;
+        margin-bottom: 0px;
+        padding: 5px;
+        align-self: center;
+        border: 1px solid #191919;
+        background-color: white;
+    }
+    .create-community p label ~ .form-control {
+        width: max-content;
+        border: 1px solid #191919;
+        border-left: none;
+        border-radius: 0px;
+        height: 36px;
+    }
+    .create-community .btn {
+        border: 1px solid #191919;
+        border-radius: 0px;
+        background-color: white;
+        color: #191919;
+        transition: .15s ease-in;
+    }
+    .create-community .btn:hover {
+        border-color: #e5e5e5;
+        color: #e5e5e5;
+        background-color: #191919;
+    }
+</style>
+{% endblock %}
