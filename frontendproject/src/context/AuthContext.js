@@ -7,14 +7,21 @@ const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token') || null);
 
   const register = async (email, username, password) => {
-    const response = await axios.post('/auth/register', { email, username, password });
-    const token = response.data.token;
-    setToken(token);
-    localStorage.setItem('token', token);
+    try {
+      const response = await axios.post('http://localhost:8080/auth/register', { email, username, password });
+      const token = response.data.token;
+      setToken(token);
+      localStorage.setItem('token', token);
+      console.log("Successful");
+    } catch (error) {
+      console.log(error);
+    }
+    
+    
   };
 
   const login = async (email, password) => {
-    const response = await axios.post('/auth/login', { email, password });
+    const response = await axios.post('http://localhost:8080/auth/login', { email, password });
     const token = response.data.token;
     setToken(token);
     localStorage.setItem('token', token);
