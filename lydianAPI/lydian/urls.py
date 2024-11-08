@@ -28,6 +28,6 @@ urlpatterns = [
 
 
 # Configure Admin Title
-admin.site.site_header = "EcoNews Admin"
-admin.site.site_title = "EcoNews"
+admin.site.site_header = "Lydian Admin"
+admin.site.site_title = "Lydian"
 admin.site.index_title = "Admin"
