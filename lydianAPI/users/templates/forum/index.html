@@ -1,0 +1,22 @@
+<h1>Welcome to the Blog</h1>
+
+{% if user.is_authenticated %}
+    <p>Hello, {{ user.username }}! <a href="{% url 'logout' %}">Logout</a> | <a href="{% url 'create_post' %}">Create Post</a></p>
+    <h2>Latest Posts</h2>
+    <ul>
+        {% for post in posts %}
+            <li>
+                <strong>{{ post.title }}</strong> <br>
+                {{ post.description }} <br>
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" alt="Post image" width="300"><br>
+                {% endif %}
+                <small>Posted by {{ post.author.username }}</small>
+            </li>
+        {% empty %}
+            <li>No posts available.</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p><a href="{% url 'login' %}">Login</a> or <a href="{% url 'signup' %}">Signup</a> to see the latest posts.</p>
+{% endif %}

@@ -1,55 +1,44 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib import messages
-from django.contrib.auth.forms import UserCreationForm
-from users.forms import RegisterUserForm, UserProfile
-from .models import Member
-# Create your views here.
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.decorators import login_required
+from .models import Post
 
-def login_user(request):
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            # Redirect to a success page
-            login(request, user)
-            return redirect('home')
-        else:
-            # Return to login page
-            messages.success(request, ("There was an error logging in!"))
-            return redirect('login')
+def index(request):
+    posts = Post.objects.order_by('-id')  # Order by newest posts
+    return render(request, 'forum/index.html', {'posts': posts, 'user': request.user})
 
-    else:
-        return render(request, 'authenticate/login.html', {})
-    
-def logout_user(request):
-    logout(request)
-    # messages.success(request, ("You are logged out!"))
-    return redirect('home')
-
-def register_user(request):
-    if request.method == "POST":
-        form = RegisterUserForm(request.POST)
+def signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']
-            user = authenticate(username=username, password=password)
-            login(request, user)
-            messages.success(request, ("Registration Successful!"))
-            return redirect('home')
+            return redirect('login')
     else:
-        form = RegisterUserForm()
-    
-    return render(request,'authenticate/register_user.html', {'form': form})
+        form = UserCreationForm()
+    return render(request, 'forum/signup.html', {'form': form})
 
-def view_profile(request):
-    user = request.user
-    form = UserProfile(request.POST or None, instance = user)
+def login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('index')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'forum/login.html', {'form': form})
 
-    if form.is_valid():
-        form.save()
-        return redirect('home')
+def logout_view(request):
+    logout(request)
+    return redirect('index')
 
-    return render(request, 'profile.html', {'user': user, 'form': form})
+@login_required
+def create_post(request):
+    if request.method == 'POST':
+        title = request.POST['title']
+        description = request.POST['description']
+        image = request.FILES.get('image')  # Get the uploaded image
+        Post.objects.create(title=title, description=description, image=image, author=request.user)
+        return redirect('index')
+    return render(request, 'forum/create_post.html')
