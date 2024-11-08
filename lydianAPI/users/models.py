@@ -1,14 +1,13 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-from django.apps import apps
 
-# def get_community_membership_model():
-# #Retrieve the CommunityMembership model dynamically to avoid circular imports.
-#     return apps.get_model('home', 'CommunityMembership')
+from django.db import models
+from django.contrib.auth.models import User
 
-# Create your models here.
-class Member(AbstractUser):
-    def is_member(self, community_id):
-        # CommunityMembership = get_community_membership_model()
-        # return CommunityMembership.objects.filter(community_id=community_id, user=self).exists()
-        return True
+class Post(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    image = models.ImageField(upload_to='post_images/', blank=True, null=True)  # image field
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.title
