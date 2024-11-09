@@ -1,7 +1,10 @@
-<h2>Login</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Log in</button>
-</form>
-<a href="{% url 'signup' %}">Don't have an account? Sign up</a>
+{% extends './index.html' %}
+
+{% block auth_content %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-register mb-4" type="submit">Log in</button>
+    </form>
+    <a class="login-link" href="{% url 'signup' %}">Don't have an account? Sign up</a>
+{% endblock %}
