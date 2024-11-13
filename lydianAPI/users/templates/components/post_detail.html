@@ -1,0 +1,20 @@
+{% extends '../forum/index.html' %}
+
+{% block home_content %}
+<div class="card" style="margin: 3rem; padding: 2rem 3rem;">
+    <a href="{% url 'index' %}" class="align-self-end">X</a>
+    <div class="d-flex" style="column-gap: 2rem;">
+        {% if post.image %}
+            <img src="{{ post.image.url }}" alt="Post image" width="50%" class="rounded-lg shadow">
+        {% endif %}
+        <div>
+            <h2 style="line-height: 20px;">{{ post.title }}</h2>
+            <small>shared by <span>{{ post.author.username }}</span></small>
+            <p class="mt-3">{{ post.description }}</p>
+        </div>
+    </div>
+    {% if user == post.author or user.is_staff %}
+        <a href="{% url 'delete_post' post.id %}">Delete Post</a>
+    {% endif %}
+</div>
+{% endblock %}
