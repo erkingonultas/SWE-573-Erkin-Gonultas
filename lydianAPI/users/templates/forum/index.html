@@ -29,18 +29,18 @@
             <h1>Latest Posts</h1>
             <div class="row" id="posts" style="justify-content: space-between; row-gap: 25px;">
                 {% for post in posts %}
-                    <div class="card" id="post">
+                    <a class="card" id="post" href="{% url 'post_detail' post.id %}">
                         {% if post.image %}
-                        <div style="overflow: hidden; border-radius: .25rem;">
+                        <div style="overflow: hidden; border-top-left-radius: .25rem; border-top-right-radius: .25rem;">
                             <img class="card-img-top" src="{{ post.image.url }}" alt="Post image" width="300"><br>
                         </div>
                         {% endif %}
                         <div class="card-body">
                             <strong>{{ post.title }}</strong>
-                            <p>{{ post.description|slice:":150" }}...</p>
+                            <p>{{ post.description|slice:":100" }}...</p>
                             <small>shared by <span>{{ post.author.username }}</span></small>
                         </div>
-                    </div>
+                    </a>
                 {% empty %}
                 <span>
                     No posts available.
@@ -81,6 +81,13 @@
         --text-color: #191919;
         --input-border-color: #ced4da;
         --input-focus-color: #77b28c;
+    }
+    a {
+        color: var(--text-color);
+    }
+    a:hover {
+        color: var(--hover-color);
+        text-decoration: none;
     }
     .btn:hover {
         color: white;
