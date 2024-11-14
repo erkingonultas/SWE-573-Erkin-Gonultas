@@ -93,7 +93,7 @@ if DEBUG == False:
 firebase_cred = credentials.Certificate(os.path.join('/etc/secrets/fb_config'))
 
 firebase_admin.initialize_app(firebase_cred, {
-    'storageBucket': os.environ.get("FB_STORAGE_BUCKET")
+    'storageBucket': "projectpan-a30c5.appspot.com"
 })
 
 # Password validation
