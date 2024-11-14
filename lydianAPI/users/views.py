@@ -1,7 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseForbidden
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from firebase_admin import storage
+import uuid
 from .models import Post
 
 def index(request):
@@ -38,7 +41,41 @@ def create_post(request):
     if request.method == 'POST':
         title = request.POST['title']
         description = request.POST['description']
-        image = request.FILES.get('image')  # Get the uploaded image
-        Post.objects.create(title=title, description=description, image=image, author=request.user)
+        image = request.FILES.get('image')
+        image_url = None
+
+        # Upload image to Firebase Storage if it exists
+        if image:
+            # Generate a unique filename for the image
+            image_name = f"{uuid.uuid4()}.jpg"
+            bucket = storage.bucket()
+            blob = bucket.blob(image_name)
+            blob.upload_from_file(image.file, content_type=image.content_type)
+            # Make the image publicly accessible and get the URL
+            blob.make_public()
+            image_url = blob.public_url
+
+        # Create the post with the Firebase image URL
+        Post.objects.create(title=title, description=description, image_url=image_url, author=request.user)
         return redirect('index')
+    
     return render(request, 'forum/create_post.html')
+
+@login_required
+def delete_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    # Check if the user is the post's author or an admin
+    if request.user == post.author or request.user.is_staff:
+        if request.method == 'POST':
+            post.delete()
+            return redirect('index')
+    else:
+        return HttpResponseForbidden("You do not have permission to delete this post.")
+
+    return render(request, 'components/delete_post.html', {'post': post})
+
+@login_required
+def post_detail(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    return render(request, 'components/post_detail.html', {'post': post})
