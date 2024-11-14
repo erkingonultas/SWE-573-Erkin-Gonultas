@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import dj_database_url
+import firebase_admin
+from firebase_admin import credentials, storage
 from pathlib import Path
 import os
 
@@ -83,9 +85,31 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+if DEBUG == False:
+    database_url = os.environ.get("DATABASE_URL")
+    DATABASES["default"] = dj_database_url.parse(database_url)
 
-database_url = os.environ.get("DATABASE_URL")
-DATABASES["default"] = dj_database_url.parse(database_url)
+# Firebase configuration
+if DEBUG == False:
+    FIREBASE_CREDENTIALS_PATH = {
+        "type": os.environ.get("FB_TYPE"),
+        "project_id": os.environ.get("FB_PROJECT_ID"),
+        "private_key_id": os.environ.get("FB_PRIVATE_KEY_ID"),
+        "private_key": os.environ.get("FB_PRIVATE_KEY"),
+        "client_email": os.environ.get("FB_CLIENT_EMAIL"),
+        "client_id": os.environ.get("FB_CLIENT_ID"),
+        "auth_uri": os.environ.get("FB_AUTH_URI"),
+        "token_uri": os.environ.get("FB_TOKEN_URI"),
+        "auth_provider_x509_cert_url": os.environ.get("FB_AUTH_PROVIDER_X509_CERT_URL"),
+        "client_x509_cert_url": os.environ.get("FB_CLIENT_X509_CERT_URL"),
+        "universe_domain": os.environ.get("FB_UNIVERSE_DOMAIN"),
+    }
+else:
+    FIREBASE_CREDENTIALS_PATH = os.path.join(BASE_DIR, './projectpan-a30c5-firebase-adminsdk-qizio-4e8fb32b30.json')
+firebase_cred = credentials.Certificate(FIREBASE_CREDENTIALS_PATH)
+firebase_admin.initialize_app(firebase_cred, {
+    'storageBucket': 'projectpan-a30c5.appspot.com'
+})
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -129,5 +153,5 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MEDIA_URL = '/media/post_images/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/post_images')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')

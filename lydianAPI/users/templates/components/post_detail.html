@@ -4,8 +4,8 @@
 <div class="card" style="margin: 3rem; padding: 2rem 3rem;">
     <a href="{% url 'index' %}" class="align-self-end">X</a>
     <div class="d-flex" style="column-gap: 2rem;">
-        {% if post.image %}
-            <img src="{{ post.image.url }}" alt="Post image" width="50%" class="rounded-lg shadow">
+        {% if post.image_url %}
+            <img src="{{ post.image_url }}" alt="Post image" width="50%" class="rounded-lg shadow">
         {% endif %}
         <div>
             <h2 style="line-height: 20px;">{{ post.title }}</h2>
