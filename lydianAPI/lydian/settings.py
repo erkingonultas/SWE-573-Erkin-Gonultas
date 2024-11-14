@@ -91,19 +91,7 @@ if DEBUG == False:
 
 # Firebase configuration
 if DEBUG == False:
-    firebase_cred = credentials.Certificate({
-        "type": os.environ.get("FB_TYPE"),
-        "project_id": os.environ.get("FB_PROJECT_ID"),
-        "private_key_id": os.environ.get("FB_PRIVATE_KEY_ID"),
-        "private_key": os.environ.get('FB_PRIVATE_KEY').replace('\\n', '\n'),
-        "client_email": os.environ.get("FB_CLIENT_EMAIL"),
-        "client_id": os.environ.get("FB_CLIENT_ID"),
-        "auth_uri": os.environ.get("FB_AUTH_URI"),
-        "token_uri": os.environ.get("FB_TOKEN_URI"),
-        "auth_provider_x509_cert_url": os.environ.get("FB_AUTH_PROVIDER_X509_CERT_URL"),
-        "client_x509_cert_url": os.environ.get("FB_CLIENT_X509_CERT_URL"),
-        "universe_domain": os.environ.get("FB_UNIVERSE_DOMAIN"),
-    })
+    firebase_cred = credentials.Certificate(os.path.join(BASE_DIR, './etc/secrets/fb_config'))
 else:
     firebase_cred = credentials.Certificate(os.path.join(BASE_DIR, './projectpan-a30c5-firebase-adminsdk-qizio-4e8fb32b30.json'))
 
