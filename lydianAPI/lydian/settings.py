@@ -90,7 +90,6 @@ if DEBUG == False:
     DATABASES["default"] = dj_database_url.parse(database_url)
 
 # Firebase configuration
-firebase_cred = None
 if DEBUG == False:
     firebase_cred = credentials.Certificate({
         "type": os.environ.get("FB_TYPE"),
