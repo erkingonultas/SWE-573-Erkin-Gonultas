@@ -90,10 +90,7 @@ if DEBUG == False:
     DATABASES["default"] = dj_database_url.parse(database_url)
 
 # Firebase configuration
-if DEBUG == False:
-    firebase_cred = credentials.Certificate(os.path.join('/etc/secrets/fb_config'))
-else:
-    firebase_cred = credentials.Certificate(os.path.join(BASE_DIR, './projectpan-a30c5-firebase-adminsdk-qizio-4e8fb32b30.json'))
+firebase_cred = credentials.Certificate(os.path.join('/etc/secrets/fb_config'))
 
 firebase_admin.initialize_app(firebase_cred, {
     'storageBucket': os.environ.get("FB_STORAGE_BUCKET")
