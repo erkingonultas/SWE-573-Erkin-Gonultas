@@ -90,8 +90,9 @@ if DEBUG == False:
     DATABASES["default"] = dj_database_url.parse(database_url)
 
 # Firebase configuration
+firebase_cred = None
 if DEBUG == False:
-    FIREBASE_CREDENTIALS_PATH = {
+    firebase_cred = {
         "type": os.environ.get("FB_TYPE"),
         "project_id": os.environ.get("FB_PROJECT_ID"),
         "private_key_id": os.environ.get("FB_PRIVATE_KEY_ID"),
@@ -105,8 +106,8 @@ if DEBUG == False:
         "universe_domain": os.environ.get("FB_UNIVERSE_DOMAIN"),
     }
 else:
-    FIREBASE_CREDENTIALS_PATH = os.path.join(BASE_DIR, './projectpan-a30c5-firebase-adminsdk-qizio-4e8fb32b30.json')
-firebase_cred = credentials.Certificate(FIREBASE_CREDENTIALS_PATH)
+    firebase_cred = credentials.Certificate(os.path.join(BASE_DIR, './projectpan-a30c5-firebase-adminsdk-qizio-4e8fb32b30.json'))
+
 firebase_admin.initialize_app(firebase_cred, {
     'storageBucket': 'projectpan-a30c5.appspot.com'
 })
