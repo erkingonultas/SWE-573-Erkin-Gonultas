@@ -41,6 +41,10 @@ def create_post(request):
     if request.method == 'POST':
         title = request.POST['title']
         description = request.POST['description']
+        color = request.POST['color']
+        shape = request.POST['shape']
+        material = request.POST['material']
+        weight = request.POST['weight']
         image = request.FILES.get('image')
         image_url = None
 
@@ -56,7 +60,15 @@ def create_post(request):
             image_url = blob.public_url
 
         # Create the post with the Firebase image URL
-        Post.objects.create(title=title, description=description, image_url=image_url, author=request.user)
+        Post.objects.create(
+            title=title,
+            description=description,
+            image_url=image_url,
+            color=color,
+            shape=shape,
+            material=material,
+            weight=weight, author=request.user,
+        )
         return redirect('index')
     
     return render(request, 'forum/create_post.html')

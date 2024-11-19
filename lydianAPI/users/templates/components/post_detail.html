@@ -5,16 +5,20 @@
     <a href="{% url 'index' %}" class="align-self-end">X</a>
     <div class="d-flex" style="column-gap: 2rem;">
         {% if post.image_url %}
-            <img src="{{ post.image_url }}" alt="Post image" width="50%" class="rounded-lg shadow">
+        <img src="{{ post.image_url }}" alt="Post image" width="50%" class="rounded-lg shadow">
         {% endif %}
         <div>
             <h2 style="line-height: 20px;">{{ post.title }}</h2>
             <small>shared by <span>{{ post.author.username }}</span></small>
-            <p class="mt-3">{{ post.description }}</p>
+            <p class="mt-3">{{ post.description }} </p>
+            | <small>Color: {{ post.color }} </small>|
+            <small>Shape: {{ post.shape }} </small>|
+            <small>Material: {{ post.material }} </small>|
+            <small>Weight: {{ post.weight }} </small>|
         </div>
     </div>
     {% if user == post.author or user.is_staff %}
-        <a href="{% url 'delete_post' post.id %}">Delete Post</a>
+    <a href="{% url 'delete_post' post.id %}" class="btn-danger p-1 rounded mt-4" style="width: max-content;">Delete Post</a>
     {% endif %}
 </div>
 {% endblock %}

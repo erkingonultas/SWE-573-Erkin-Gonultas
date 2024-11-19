@@ -6,7 +6,7 @@
             Create a Post
         </h3>
         <div class="card-body">
-            <form method="post" enctype="multipart/form-data">  <!-- Add enctype for file upload -->
+            <form method="post" enctype="multipart/form-data"> <!-- Add enctype for file upload -->
                 {% csrf_token %}
                 <label>Title:</label>
                 <input type="text" name="title" required><br>
@@ -14,6 +14,36 @@
                 <textarea name="description" required></textarea><br>
                 <label>Image:</label>
                 <input type="file" name="image"><br>
+                <label for="color">Color:</label>
+                <select id="color" name="color">
+                    <option value="orange">Orange</option>
+                    <option value="white">White</option>
+                    <option value="beige">Beige</option>
+                    <option value="black">Black</option>
+                    <option value="other">Other</option>
+                </select><br>
+
+                <label for="shape">Shape:</label>
+                <select id="shape" name="shape">
+                    <option value="cylinder">Cylinder</option>
+                    <option value="square">Square</option>
+                    <option value="other">Other</option>
+                </select><br>
+
+                <label for="material">Material:</label>
+                <select id="material" name="material">
+                    <option value="plastic">Plastic</option>
+                    <option value="metal">Metal</option>
+                    <option value="other">Other</option>
+                </select><br>
+
+                <label for="weight">Weight:</label>
+                <select id="weight" name="weight">
+                    <option value="0-2.5kg">0-2.5kg</option>
+                    <option value="2.5-5kg">2.5-5kg</option>
+                    <option value="5-10kg">5-10kg</option>
+                    <option value="other">Other</option>
+                </select><br>
                 <button class="btn btn-register" type="submit">Post</button>
             </form>
         </div>
