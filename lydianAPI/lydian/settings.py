@@ -96,7 +96,7 @@ else:
     firebase_cred = credentials.Certificate(os.path.join(BASE_DIR, './projectpan-a30c5-firebase-adminsdk-qizio-4e8fb32b30.json'))
 
 firebase_admin.initialize_app(firebase_cred, {
-    'storageBucket': os.environ.get("FB_STORAGE_BUCKET")
+    'storageBucket': "projectpan-a30c5.appspot.com"
 })
 
 # Password validation
