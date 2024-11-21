@@ -45,6 +45,13 @@ def create_post(request):
         shape = request.POST['shape']
         material = request.POST['material']
         weight = request.POST['weight']
+        location = request.POST['location']
+        hardness = request.POST['hardness']
+        time_period = request.POST['time_period']
+        smell = request.POST['smell']
+        taste = request.POST['taste']
+        texture = request.POST['texture']
+        value = request.POST['value']
         image = request.FILES.get('image')
         image_url = None
 
@@ -67,7 +74,14 @@ def create_post(request):
             color=color,
             shape=shape,
             material=material,
-            weight=weight, author=request.user,
+            weight=weight,
+            location=location,
+            hardness=hardness,
+            time_period=time_period,
+            smell=smell,
+            taste=taste,
+            texture=texture,
+            value=value, author=request.user,
         )
         return redirect('index')
     

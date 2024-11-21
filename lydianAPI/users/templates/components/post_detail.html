@@ -15,10 +15,18 @@
             <small>Shape: {{ post.shape }} </small>|
             <small>Material: {{ post.material }} </small>|
             <small>Weight: {{ post.weight }} </small>|
+            <small>Location: {{ post.location }} </small>|
+            <small>Hardness: {{ post.hardness }} </small>|
+            <small>Time Period: {{ post.time_period }} </small>|
+            <small>Smell: {{ post.smell }} </small>|
+            <small>Taste: {{ post.taste }} </small>|
+            <small>Texture: {{ post.texture }} </small>|
+            <small>Value: {{ post.value }} </small>|
         </div>
     </div>
     {% if user == post.author or user.is_staff %}
-    <a href="{% url 'delete_post' post.id %}" class="btn-danger p-1 rounded mt-4" style="width: max-content;">Delete Post</a>
+    <a href="{% url 'delete_post' post.id %}" class="btn-danger p-1 rounded mt-4" style="width: max-content;">Delete
+        Post</a>
     {% endif %}
 </div>
 {% endblock %}
