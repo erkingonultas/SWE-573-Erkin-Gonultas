@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from firebase_admin import storage
 import uuid
-from .models import Post
+from .models import Comment, Post
 
 def index(request):
     posts = Post.objects.order_by('-id')  # Order by newest posts
@@ -105,3 +105,35 @@ def delete_post(request, post_id):
 def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     return render(request, 'components/post_detail.html', {'post': post})
+
+@login_required
+def add_comment(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if content:
+            Comment.objects.create(post=post, author=request.user, content=content)
+        return redirect('post_detail', post_id=post.id)
+
+@login_required
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    post = comment.post
+
+    # Only post owner or admin can delete
+    if request.user == post.author or request.user.is_staff:
+        comment.delete()
+    return redirect('post_detail', post_id=post.id)
+
+@login_required
+def mark_as_resolved(request, post_id, comment_id):
+    post = get_object_or_404(Post, id=post_id)
+    comment = get_object_or_404(Comment, id=comment_id, post=post)
+
+    # Only the post owner can mark as resolved
+    if request.user == post.author:
+        post.is_resolved = True
+        post.resolved_comment = comment
+        post.save()
+    return redirect('post_detail', post_id=post.id)

@@ -8,6 +8,10 @@ class Post(models.Model):
     description = models.TextField()
     image_url = models.CharField(max_length=500, blank=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    is_resolved = models.BooleanField(default=False)
+    resolved_comment = models.ForeignKey(
+        'Comment', on_delete=models.SET_NULL, null=True, blank=True, related_name='resolved_for_post'
+    )
 
     # New fields with predefined choices
     COLOR_CHOICES = [
@@ -121,3 +125,9 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
