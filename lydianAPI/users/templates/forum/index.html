@@ -26,12 +26,15 @@
             </div>
         </div>
         <main class="container" style="margin-bottom: 6rem;">
-            <h1>Latest Posts</h1>
+            <h1>Latest Objects</h1>
             <div class="row" id="posts" style="justify-content: space-between; row-gap: 25px;">
                 {% for post in posts %}
                     <a class="card" id="post" href="{% url 'post_detail' post.id %}">
                         {% if post.image_url %}
                         <div style="overflow: hidden; border-top-left-radius: .25rem; border-top-right-radius: .25rem;">
+                            {% if post.is_resolved %}
+                            <span id="resolved-badge">RESOLVED</span>
+                            {% endif %}
                             <img class="card-img-top" src="{{ post.image_url }}" alt="Post image" width="300"><br>
                         </div>
                         {% endif %}
@@ -229,10 +232,44 @@
     #posts #post:hover img {
         transform: scale(1.05);
     }
+    #resolved-badge {
+        position: absolute;
+        top: 45%;
+        width: 100%;
+        z-index: 99;
+        color: white !important;
+        padding: 10px;
+        background-color: var(--primary-color);
+        font-size: 2rem;
+        font-weight: 900;
+        text-align: center;
+        opacity: .9;
+    }
+
     #share-btn {
         position: fixed;
         bottom: 20px;
         right: 40px;
+    }
+
+    #post-detail form textarea {
+        display: inline-block;
+        width: 50%;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: var(--primary-color);
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid var(--input-border-color);
+        border-radius: 0.25rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    #post-detail form textarea:focus {
+        border-color: var(--input-focus-color);
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem #77b28c75;
     }
 
     @keyframes slideUp {

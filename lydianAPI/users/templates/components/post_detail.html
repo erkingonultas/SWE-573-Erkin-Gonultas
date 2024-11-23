@@ -1,7 +1,7 @@
 {% extends '../forum/index.html' %}
 
 {% block home_content %}
-<div class="card" style="margin: 3rem; padding: 2rem 3rem;">
+<div class="card" id="post-detail" style="margin: 3rem; padding: 2rem 3rem;">
     <a href="{% url 'index' %}" class="align-self-end">X</a>
     <div class="d-flex" style="column-gap: 2rem;">
         {% if post.image_url %}
@@ -22,11 +22,54 @@
             <small>Taste: {{ post.taste }} </small>|
             <small>Texture: {{ post.texture }} </small>|
             <small>Value: {{ post.value }} </small>|
+            <div class="mt-4">
+                {% if post.is_resolved %}
+                <div>
+                    <h4>Resolved Comment</h4>
+                    <p class="mb-0">{{ post.resolved_comment.content }}</p>
+                    <small>By {{ post.resolved_comment.author.username }} on {{ post.resolved_comment.created_at }}</small>
+                </div>
+                {% else %}
+                <h4>Comments</h4>
+                <ul>
+                    {% for comment in post.comments.all %}
+                        <li>
+                            <strong>{{ comment.author.username }}:</strong> {{ comment.content }}
+                            <small>{{ comment.created_at }}</small>
+                            {% if user.is_authenticated %}
+                                {% if user == post.author or user.is_staff %}
+                                    <form action="{% url 'delete_comment' comment.id %}" method="POST" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button class="btn btn-danger" type="submit">Delete</button>
+                                    </form>
+                                {% endif %}
+                                {% if user == post.author and not post.is_resolved %}
+                                    <form action="{% url 'mark_as_resolved' post.id comment.id %}" method="POST" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button class="btn btn-warning" type="submit">Mark to Resolve</button>
+                                    </form>
+                                {% endif %}
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% if user.is_authenticated and not post.is_resolved %}
+                <div>
+                    <form action="{% url 'add_comment' post.id %}" method="POST" class="text-rigth">
+                        {% csrf_token %}
+                        <textarea name="content" rows="1" required class="w-100"></textarea><br>
+                        <button class="btn btn-register p-1" type="submit">Add Comment</button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
         </div>
     </div>
     {% if user == post.author or user.is_staff %}
-    <a href="{% url 'delete_post' post.id %}" class="btn-danger p-1 rounded mt-4" style="width: max-content;">Delete
-        Post</a>
+        <a href="{% url 'delete_post' post.id %}" class="btn-danger p-1 rounded mt-4" style="width: max-content;">
+            Delete Post
+        </a>
     {% endif %}
 </div>
 {% endblock %}
