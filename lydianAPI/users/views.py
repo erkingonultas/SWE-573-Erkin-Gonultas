@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponseForbidden
+import requests
+from django.http import HttpResponseForbidden, JsonResponse
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from firebase_admin import storage
 import uuid
-from .models import Comment, Post
+from .models import Comment, Post, Tag
 
 def index(request):
     posts = Post.objects.order_by('-id')  # Order by newest posts
@@ -41,6 +42,7 @@ def create_post(request):
     if request.method == 'POST':
         title = request.POST['title']
         description = request.POST['description']
+        tags = request.POST.get('tags', '').split(',')
         color = request.POST['color']
         shape = request.POST['shape']
         material = request.POST['material']
@@ -67,7 +69,7 @@ def create_post(request):
             image_url = blob.public_url
 
         # Create the post with the Firebase image URL
-        Post.objects.create(
+        post = Post.objects.create(
             title=title,
             description=description,
             image_url=image_url,
@@ -83,7 +85,13 @@ def create_post(request):
             texture=texture,
             value=value, author=request.user,
         )
-        return redirect('index')
+        # Add tags
+        for tag_name in tags:
+            tag_name = tag_name.strip()
+            if tag_name:
+                tag, created = Tag.objects.get_or_create(name=tag_name)
+                post.tags.add(tag)
+        return redirect('post_detail', post_id=post.id)
     
     return render(request, 'forum/create_post.html')
 
@@ -137,3 +145,24 @@ def mark_as_resolved(request, post_id, comment_id):
         post.resolved_comment = comment
         post.save()
     return redirect('post_detail', post_id=post.id)
+
+def search_wikidata(request):
+    query = request.GET.get('query', '')
+    if not query:
+        return JsonResponse({'results': []})
+
+    url = "https://www.wikidata.org/w/api.php"
+    params = {
+        'action': 'wbsearchentities',
+        'format': 'json',
+        'language': 'en',
+        'search': query
+    }
+
+    response = requests.get(url, params=params)
+    if response.status_code == 200:
+        data = response.json()
+        results = [{'id': item['id'], 'label': item.get('label', ''), 'description': item.get('description', '')} for item in data.get('search', [])]
+        return JsonResponse({'results': results})
+    else:
+        return JsonResponse({'results': []})

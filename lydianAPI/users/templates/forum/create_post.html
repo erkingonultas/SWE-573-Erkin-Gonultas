@@ -116,9 +116,50 @@
                     <option value="luxury">luxury</option>
                     <option value="other">Other</option>
                 </select><br>
+                <label>Tags</label>
+                <input type="text" id="tag-search" placeholder="Search for tags...">
+                <ul id="tag-results" style="list-style: none;"></ul>
+                <div id="selected-tags">
+                    <h6>Selected Tags:</h6>
+                </div>
+                <input type="hidden" name="tags" id="tags-input">
                 <button class="btn btn-register" type="submit">Post</button>
             </form>
         </div>
     </div>
 </div>
+<script>
+    document.getElementById('tag-search').addEventListener('input', function () {
+        const query = this.value;
+        if (query.length < 2) return;
+
+        fetch(`/search_wikidata/?query=${query}`)
+            .then(response => response.json())
+            .then(data => {
+                const resultsContainer = document.getElementById('tag-results');
+                resultsContainer.innerHTML = '';
+
+                data.results.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = `${item.label} (${item.description || 'No description'})`;
+                    li.dataset.id = item.id;
+                    li.dataset.label = item.label;
+
+                    li.addEventListener('click', function () {
+                        const tagContainer = document.getElementById('selected-tags');
+                        const selectedTag = document.createElement('div');
+                        selectedTag.textContent = this.dataset.label;
+                        tagContainer.appendChild(selectedTag);
+
+                        const tagsInput = document.getElementById('tags-input');
+                        tagsInput.value += this.dataset.label + ',';
+
+                        resultsContainer.innerHTML = '';
+                    });
+
+                    resultsContainer.appendChild(li);
+                });
+            });
+    });
+</script>
 {% endblock home_content %}
