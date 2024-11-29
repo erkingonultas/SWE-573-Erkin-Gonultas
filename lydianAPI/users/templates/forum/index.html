@@ -272,6 +272,33 @@
         box-shadow: 0 0 0 0.2rem #77b28c75;
     }
 
+    #tag-results > li, #selected-tags > div, #post-tags > li {
+        width: max-content;
+        padding: 6px 12px;
+        background-color: var(--hover-color);
+        color: white;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        cursor: pointer;
+    }
+    #tag-results > li:hover, #selected-tags > div:hover, #post-tags > li:hover {
+        background-color: var(--primary-color);
+    }
+    #tag-results:has(li) {
+        display: block;
+    }
+    #tag-results {
+        list-style: none;
+        display: none;
+        position: absolute;
+        height: 125px;
+        overflow: scroll;
+        background-color: white;
+        padding: 20px;
+        border: 1px solid gray;
+        border-radius: 12px;
+    }
+
     @keyframes slideUp {
         from {
             opacity: 0;
