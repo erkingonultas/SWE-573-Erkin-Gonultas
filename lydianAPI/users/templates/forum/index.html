@@ -41,6 +41,11 @@
                         <div class="card-body">
                             <strong>{{ post.title }}</strong>
                             <p>{{ post.description|slice:":100" }}...</p>
+                            <ul id="post-tags-mini">
+                                {% for tag in post.tags.all %}
+                                    <li>{{ tag.name }}</li>
+                                {% endfor %}
+                            </ul>
                             <small>shared by <span>{{ post.author.username }}</span></small>
                         </div>
                     </a>
@@ -271,7 +276,23 @@
         outline: 0;
         box-shadow: 0 0 0 0.2rem #77b28c75;
     }
-
+    #post-tags-mini {
+        display: flex;
+        margin: 0px;
+        column-gap: 10px;
+        margin-block-start: 0px;
+        padding-inline-start: 0px;
+    }
+    #post-tags-mini > li {
+        width: max-content;
+        font-size: 10px;
+        padding: 6px 12px;
+        background-color: var(--hover-color);
+        color: white;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        cursor: pointer;
+    }
     #tag-results > li, #selected-tags > div, #post-tags > li {
         width: max-content;
         padding: 6px 12px;
