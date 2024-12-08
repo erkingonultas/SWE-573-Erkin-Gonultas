@@ -9,9 +9,9 @@ RUN apt-get update
 
 # install dependencies
 RUN pip install --upgrade pip
-COPY /lydianAPI/requirements.txt /app/
+COPY /requirements.txt /app/
 RUN pip install -r requirements.txt
 
 COPY . /app
 
-ENTRYPOINT [ "gunicorn", "core.wsgi", "-b", "0.0.0.0:8000"]
+ENTRYPOINT [ "gunicorn", "lydian.wsgi", "-b", "0.0.0.0:8000"]
