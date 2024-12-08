@@ -7,6 +7,8 @@ from django.contrib.auth.decorators import login_required
 from firebase_admin import storage
 import uuid
 from .models import Comment, Post, Tag
+from django.db.models import Q
+from .forms import PostSearchForm
 
 def index(request):
     posts = Post.objects.order_by('-id')  # Order by newest posts
@@ -175,3 +177,36 @@ def search_wikidata(request):
         return JsonResponse({'results': results})
     else:
         return JsonResponse({'results': []})
+    
+def search_posts(request):
+    form = PostSearchForm(request.GET or None)
+    results = None
+
+    if form.is_valid():
+        query = Q()
+
+        # Filter by title and description
+        if form.cleaned_data['title']:
+            query &= Q(title__icontains=form.cleaned_data['title'])
+        if form.cleaned_data['description']:
+            query &= Q(description__icontains=form.cleaned_data['description'])
+
+        # Filter by size
+        if form.cleaned_data['height']:
+            query &= Q(height__gte=form.cleaned_data['height'])
+        if form.cleaned_data['length']:
+            query &= Q(length__gte=form.cleaned_data['length'])
+        if form.cleaned_data['depth']:
+            query &= Q(depth__gte=form.cleaned_data['depth'])
+        if form.cleaned_data['size_unit']:
+            query &= Q(size_unit=form.cleaned_data['size_unit'])
+
+        # Filter by dropdown fields
+        for field in ['color', 'shape', 'material', 'weight', 'hardness', 'time_period', 
+                      'smell', 'taste', 'texture', 'value', 'location']:
+            if form.cleaned_data[field]:
+                query &= Q(**{f"{field}": form.cleaned_data[field]})
+
+        results = Post.objects.filter(query).distinct()
+
+    return render(request, 'components/search_results.html', {'form': form, 'results': results})
