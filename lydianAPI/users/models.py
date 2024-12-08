@@ -265,6 +265,16 @@ class Post(models.Model):
     taste = models.CharField(max_length=20, choices=TASTE_CHOICES, default='other')
     texture = models.CharField(max_length=20, choices=TEXTURE_CHOICES, default='other')
     value = models.CharField(max_length=20, choices=VALUE_CHOICES, default='other')
+    # New size fields
+    height = models.PositiveIntegerField(null=True, blank=True)
+    length = models.PositiveIntegerField(null=True, blank=True)
+    depth = models.PositiveIntegerField(null=True, blank=True)
+    SIZE_UNITS = [
+        ('cm', 'Centimeters'),
+        ('inch', 'Inches'),
+    ]
+    size_unit = models.CharField(max_length=10, choices=SIZE_UNITS, default='cm')
+
 
     def __str__(self):
         return self.title
