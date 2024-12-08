@@ -13,4 +13,5 @@ urlpatterns = [
     path('comment/<int:comment_id>/delete/', views.delete_comment, name='delete_comment'),
     path('post/<int:post_id>/resolve/<int:comment_id>/', views.mark_as_resolved, name='mark_as_resolved'),
     path('search_wikidata/', views.search_wikidata, name='search_wikidata'),
+    path('search/', views.search_posts, name='search_posts'),
 ]
