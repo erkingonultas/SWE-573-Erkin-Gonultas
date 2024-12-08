@@ -10,7 +10,7 @@ RUN apt-get update
 # install dependencies
 RUN pip install --upgrade pip
 COPY /lydianAPI/requirements.txt /app/
-RUN pip install -r /lydianAPI/requirements.txt
+RUN pip install -r requirements.txt
 
 COPY . /app
 
