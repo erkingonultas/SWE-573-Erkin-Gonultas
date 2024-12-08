@@ -47,6 +47,11 @@ def create_post(request):
         shape = request.POST['shape']
         material = request.POST['material']
         weight = request.POST['weight']
+        # New size fields
+        height = request.POST.get('height')
+        length = request.POST.get('length')
+        depth = request.POST.get('depth')
+        size_unit = request.POST.get('size_unit', 'cm')
         location = request.POST['location']
         hardness = request.POST['hardness']
         time_period = request.POST['time_period']
@@ -77,6 +82,10 @@ def create_post(request):
             shape=shape,
             material=material,
             weight=weight,
+            height=int(height) if height else None,
+            length=int(length) if length else None,
+            depth=int(depth) if depth else None,
+            size_unit=size_unit,
             location=location,
             hardness=hardness,
             time_period=time_period,
